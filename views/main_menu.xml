@@ -1,0 +1,7 @@
+<odoo>
+    <menuitem
+        id="delegations_root_menu"
+        name="Delegations"
+        web_icon="delegation,static/description/icon.png"
+    />
+</odoo>

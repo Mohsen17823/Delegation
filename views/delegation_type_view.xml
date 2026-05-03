@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="delegation_type_form_view" model="ir.ui.view">
+            <field name="name">Delegation Form View</field>
+            <field name="model">delegation.type</field>
+            <field name="arch" type="xml">
+                <form string="Delegation Type">
+                    <sheet>
+                        <group>
+                            <div class="oe_title">
+                                <h3>
+                                    <label for="name" class="fw-bold"/>
+                                    <field name="name"/>
+                                </h3>
+                            </div>
+                            <group>
+                                <field name="users_ids" widget="many2many_tags"/>
+                            </group>
+                            <separator/>
+                            <group colspan="2">
+                                <field name="groups_ids"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="delegation_type_tree_view" model="ir.ui.view">
+            <field name="name">Delegation Tree View</field>
+            <field name="model">delegation.type</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="create_uid"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="delegation_type_act_window" model="ir.actions.act_window">
+            <field name="name">Delegation Type</field>
+            <field name="res_model">delegation.type</field>
+        </record>
+
+        <menuitem
+            id="delegation_type_menu"
+            name="Delegation Type"
+            parent="delegations_root_menu"
+            action="delegation_type_act_window"
+            groups="delegation.group_admin_delegation"
+        />
+
+    </data>
+</odoo>

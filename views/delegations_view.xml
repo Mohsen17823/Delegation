@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="delegations_form_view" model="ir.ui.view">
+            <field name="name">Delegations Form View</field>
+            <field name="model">delegations</field>
+            <field name="arch" type="xml">
+                <form string="Delegation">
+                    <sheet>
+                        <widget name="web_ribbon" title="Revoked" bg_color="text-bg-danger" invisible="state != 'revoke'"/>
+                        <header>
+                            <field name="state" widget="statusbar" />
+                            <button name="confirm_method"
+                                    type="object"
+                                    string="Confirm"
+                                    class="btn-primary"
+                                    invisible = "state != 'draft'"
+                            />
+                            <button name="revoke_method"
+                                    type="object"
+                                    string="Revoke"
+                                    class="btn-secondary"
+                                    invisible = "state == 'revoke'"
+                            />
+                        </header>
+                        <group>
+                            <group sequence="10">
+                                <field name="delegation_type_id" domain="[('users_ids.user_id','=',uid)]"
+                                       readonly="state == 'revoke'"/>
+                                <field name="delegation_date_from" readonly="state == 'revoke'"/>
+                                <field name="delegation_date_to" readonly="state == 'revoke'"/>
+                            </group>
+                            <group sequence="20">
+                                <field name="delegation_from" widget="many2one_avatar_user"/>
+                                <field name="delegation_to" domain="[('parent_id.user_id','=',uid)]" widget="many2one_avatar_user"
+                                       readonly="state == 'revoke'"/>
+                                <field name="delegated_manager" widget="many2one_avatar_user" readonly="state == 'revoke'"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="delegations_tree_view" model="ir.ui.view">
+            <field name="name">Delegation Tree View</field>
+            <field name="model">delegations</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="delegation_type_id"/>
+                    <field name="delegation_from"/>
+                    <field name="delegation_to"/>
+                    <field name="delegated_manager"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="delegations_search_view" model="ir.ui.view">
+            <field name="name">Delegations Search</field>
+            <field name="model">delegations</field>
+            <field name="arch" type="xml">
+                <search string="Delegations">
+                    <!--Filters-->
+                    <filter name="draft" string="Draft" domain="[('state','=','draft')]"/>
+                    <filter name="confirm" string="Confirmed" domain="[('state','=','confirmed')]"/>
+                    <filter name="revoke" string="Revoked" domain="[('state','=','revoke')]"/>
+                    <!--Group By-->
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                    <filter name="group_delegation_type" string="Delegation Type" context="{'group_by': 'delegation_type_id'}"/>
+                </search>
+            </field>
+        </record>
+
+
+        <record id="check_delegation_date_cron" model="ir.cron">
+            <field name="name">Check Delegations Date</field>
+            <field name="model_id" ref="model_delegations"/>
+            <field name="state">code</field>
+            <field name="code">model.check_delegation_date()</field>
+            <field name="interval_number">6</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="active">1</field>
+        </record>
+
+
+        <record id="delegations_act_window" model="ir.actions.act_window">
+            <field name="name">Delegations</field>
+            <field name="res_model">delegations</field>
+        </record>
+
+        <menuitem
+            id="delegations_menu"
+            name="Delegations"
+            parent="delegations_root_menu"
+            action="delegations_act_window"
+        />
+
+    </data>
+</odoo>
